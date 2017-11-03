@@ -2,6 +2,20 @@ import Data.Set
 import System.Environment
 
 
+-- Cierre de conjuntos de dependencias funcionales
+
+ccdf :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
+ccdf r f = let pr   = powerSet r
+               f'   = union f (reflex pr) --ME FALTABA UNIR ESTA F, AHORA ANDAAA
+           in    ccdf' r f'
+               
+ccdf' :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
+ccdf' r f'  = if (rec == f') then f' else ccdf' r rec
+                   where rec = (let f'' = aument r f'
+                                    f''' = transRec f'' f''
+                               in f''') 
+
+
 
 
 
@@ -22,8 +36,8 @@ aumentSet r s = let p = powerSet r
 
 --basta con que sean disjuntos???
 aumentSet' :: Set Char -> (Set Char, Set Char) -> (Set Char, Set Char) 
-aumentSet' s (x, y) = if (Data.Set.size (intersection s x) == 0 && Data.Set.size (intersection s y) == 0) then (union s x, union s y) else (x, y) -- not (isSubsetOf s x || isSubsetOf s x || isSubsetOf x s || isSubsetOf x s)
-
+aumentSet' s (x, y) = (union s x, union s y) -- else (x, y) -- not (isSubsetOf s x || isSubsetOf s x || isSubsetOf x s || isSubsetOf x s)
+-- if (Data.Set.size (intersection s x) == 0 && Data.Set.size (intersection s y) == 0) then 
 
 -- Regla de transitividad total (aplica hasta que no existen mas transitividades posibles)
 transRec :: Set (Set Char, Set Char) -> Set (Set Char, Set Char) -> Set (Set Char, Set Char) 
@@ -36,7 +50,7 @@ trans ss1 ss2 = Data.Set.foldl union empty (Data.Set.map (\x -> trans' x ss2) ss
 
 --Devuelve, si es que la hay, la relacion de transitividad entre dos dependencias 
 transSet :: (Set Char, Set Char) -> (Set Char, Set Char) -> (Set Char, Set Char)
-transSet (x1, y1) (x2, y2) = if y1 == x2 then (x1, y2) else (x1, y1)
+transSet (x1, y1) (x2, y2) = if y1 == x2 then (x1, y2) else (x2, y2)
 
 --Devuelve todas las relaciones de transitividad entre una relacion y un conjunto de ellas
 trans' :: (Set Char, Set Char) -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
@@ -58,4 +72,19 @@ powerSet s = case Data.Set.null s of True  -> Data.Set.singleton empty
 -- powerset [] = [[]]
 -- powerset (x:xs) = xss ++ map (x:) xss
 --                 where xss = powerset xs
+
+
+r' :: Set Char
+r' = fromList ['A','B','C','D']
+
+f' :: Set (Set Char, Set Char)
+f' = fromList [(fromList ['A'], fromList ['B']), (fromList ['C','B'], fromList ['A']),(fromList ['B'], fromList ['A','D'])]
+
+r'' :: Set Char
+r'' = fromList ['A','B','C','D', 'E', 'F']
+
+f'' :: Set (Set Char, Set Char)
+f'' = fromList [(fromList ['A','B'], fromList ['C']), (fromList ['B','D'], fromList ['E', 'F'])]
+
+
 
