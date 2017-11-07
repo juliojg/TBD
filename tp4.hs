@@ -3,7 +3,6 @@ import System.Environment
 
 
 -- Cierre de conjuntos de dependencias funcionales
-
 ccdf :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
 ccdf r f = let pr   = powerSet r
                f'   = union f (reflex pr) --ME FALTABA UNIR ESTA F, AHORA ANDAAA
@@ -25,6 +24,25 @@ ccda' :: Set Char -> Set (Set Char, Set Char) -> Set Char
 ccda' x f = Data.Set.foldl union empty (Data.Set.map (\(y1,y2) -> if (y1 == x) then y2 else x) f)
 -- En caso de que la condicion sea falsa, no deberia devolver nada. Pero es necesario devolver algo. Pongo x porque seguro va a estar en el resultado. Ademas, con la union se eliminan las repeticiones.
 -- estamos comparando mal
+
+
+-- Algoritmo para claves candidatas
+
+{-
+apcc :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char)
+apcc r f = let p = powerSet r
+               in Data.Set.foldl union empty (Data.Set.map (\a -> apcc' a f r) p)
+
+
+
+apcc' :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char) 
+
+isGenerator :: Set Char -> Set (Set Char, Set Char) -> Set Char -> Bool 
+isGenerator a f r = (ccda a f == r)  
+
+-}
+
+
 
 -- Regla de reflexividad, obtengo la reflexion de todos los sets, y luego las uno
 reflex :: Set (Set Char) -> Set (Set Char, Set Char)
@@ -63,10 +81,6 @@ transSet (x1, y1) (x2, y2) = if y1 == x2 then (x1, y2) else (x2, y2)
 trans' :: (Set Char, Set Char) -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
 trans' s ss = insert s (union (Data.Set.map (\x -> transSet s x) ss) ss)
 
- 
---Ejemplo: aument (fromList ['1','2','3']) (fromList [(fromList ['1'], fromList ['2']) , (fromList ['2'], fromList ['3']) ])
-
-
 
 -- Dado un conjunto, obtiene el conjunto de partes de dicho conjunto
 powerSet :: Set Char -> Set (Set Char)
@@ -80,6 +94,9 @@ powerSet s = case Data.Set.null s of True  -> Data.Set.singleton empty
 -- powerset (x:xs) = xss ++ map (x:) xss
 --                 where xss = powerset xs
 
+
+
+--Sets de prueba
 
 r1 :: Set Char
 r1 = fromList ['A','B','C','D']
