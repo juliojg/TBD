@@ -15,9 +15,16 @@ ccdf' r f'  = if (rec == f') then f' else ccdf' r rec
                                     f''' = transRec f'' f''
                                in f''') 
 
+{-
+-- Cierre de un conjunto de atributos
+ccda :: Set Char -> Set (Set Char, Set Char) -> Set Char
+ccda r f = let f' = ccdf r f
+           in Data.Set.foldl union empty (Data.Set.map (\x -> ccda' x f') r)
 
-
-
+ccda' :: Char -> Set (Set Char, Set Char) -> Set Char
+ccda' x f = Data.Set.foldl union empty (Data.Set.map (\(y1,y2) -> if y1==x then y2 else x) f)
+-- En caso de que la condicion sea falsa, no deberia devolver nada. Pero es necesario devolver algo. Pongo x porque seguro va a estar en el resultado. Ademas, con la union se eliminan las repeticiones.
+-} -- estamos comparando mal
 
 -- Regla de reflexividad, obtengo la reflexion de todos los sets, y luego las uno
 reflex :: Set (Set Char) -> Set (Set Char, Set Char)
