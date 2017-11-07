@@ -15,16 +15,16 @@ ccdf' r f'  = if (rec == f') then f' else ccdf' r rec
                                     f''' = transRec f'' f''
                                in f''') 
 
-{-
+
 -- Cierre de un conjunto de atributos
 ccda :: Set Char -> Set (Set Char, Set Char) -> Set Char
-ccda r f = let f' = ccdf r f
-           in Data.Set.foldl union empty (Data.Set.map (\x -> ccda' x f') r)
+ccda a f = let f' = ccdf a f
+           in Data.Set.foldl union empty (Data.Set.map (\x -> ccda' x f') (powerSet a))
 
-ccda' :: Char -> Set (Set Char, Set Char) -> Set Char
-ccda' x f = Data.Set.foldl union empty (Data.Set.map (\(y1,y2) -> if y1==x then y2 else x) f)
+ccda' :: Set Char -> Set (Set Char, Set Char) -> Set Char
+ccda' x f = Data.Set.foldl union empty (Data.Set.map (\(y1,y2) -> if (y1 == x) then y2 else x) f)
 -- En caso de que la condicion sea falsa, no deberia devolver nada. Pero es necesario devolver algo. Pongo x porque seguro va a estar en el resultado. Ademas, con la union se eliminan las repeticiones.
--} -- estamos comparando mal
+-- estamos comparando mal
 
 -- Regla de reflexividad, obtengo la reflexion de todos los sets, y luego las uno
 reflex :: Set (Set Char) -> Set (Set Char, Set Char)
@@ -81,17 +81,35 @@ powerSet s = case Data.Set.null s of True  -> Data.Set.singleton empty
 --                 where xss = powerset xs
 
 
-r' :: Set Char
-r' = fromList ['A','B','C','D']
+r1 :: Set Char
+r1 = fromList ['A','B','C','D']
 
-f' :: Set (Set Char, Set Char)
-f' = fromList [(fromList ['A'], fromList ['B']), (fromList ['C','B'], fromList ['A']),(fromList ['B'], fromList ['A','D'])]
+f1 :: Set (Set Char, Set Char)
+f1 = fromList [(fromList ['A'], fromList ['B']), (fromList ['C','B'], fromList ['A']),(fromList ['B'], fromList ['A','D'])]
 
-r'' :: Set Char
-r'' = fromList ['A','B','C','D', 'E', 'F']
+r2 :: Set Char
+r2 = fromList ['A','B','C','D', 'E', 'F']
 
-f'' :: Set (Set Char, Set Char)
-f'' = fromList [(fromList ['A','B'], fromList ['C']), (fromList ['B','D'], fromList ['E', 'F'])]
+f2 :: Set (Set Char, Set Char)
+f2 = fromList [(fromList ['A','B'], fromList ['C']), (fromList ['B','D'], fromList ['E', 'F'])]
+
+r3 :: Set Char
+r3 = fromList ['A' .. 'J']
+
+f3 :: Set (Set Char, Set Char)
+f3 = fromList [(fromList ['A'], fromList ['I']), (fromList ['A','B'], fromList ['C']), (fromList ['A','D'], fromList ['G', 'H']), (fromList ['B','D'], fromList ['E', 'F']), (fromList ['H'], fromList ['J'])]
+
+r4 :: Set Char
+r4 = fromList ['A' .. 'H']
+
+f4 :: Set (Set Char, Set Char)
+f4 = fromList [(fromList ['A'], fromList ['B', 'C']), (fromList ['C'], fromList ['D']), (fromList ['D'], fromList ['G']), (fromList ['E'], fromList ['A']), (fromList ['E'], fromList ['H']), (fromList ['H'], fromList ['E'])]
+
+r5 :: Set Char
+r5 = fromList ['A' .. 'G']
+
+f5 :: Set (Set Char, Set Char)
+f5 = fromList [(fromList ['A'], fromList ['F']), (fromList ['A'], fromList ['G']), (fromList ['B'], fromList ['E']), (fromList ['C'], fromList ['D']), (fromList ['D'], fromList ['B']), (fromList ['E'], fromList ['A']), (fromList ['F','G'], fromList ['C'])]
 
 
 
