@@ -28,19 +28,26 @@ ccda' x f = Data.Set.foldl union empty (Data.Set.map (\(y1,y2) -> if (y1 == x) t
 
 -- Algoritmo para claves candidatas
 
-{-
+
 apcc :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char)
-apcc r f = let p = powerSet r
-               in Data.Set.foldl union empty (Data.Set.map (\a -> apcc' a f r) p)
-
-
-
-apcc' :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char) 
-
-isGenerator :: Set Char -> Set (Set Char, Set Char) -> Set Char -> Bool 
-isGenerator a f r = (ccda a f == r)  
+apcc r f = let p = (Data.Set.delete empty (powerSet r))
+               candidates = Data.Set.filter (\x -> ccda x f == r) p -- dejo solo los que generan a r
+           in elimRedundancy candidates candidates  -- y saco los que están de mas
+{-
+elimRedundancy :: Set (Set Char) -> Set (Set Char) -> Set (Set Char)
+elimRedundancy s c = case Data.Set.empty s of
+                                   True  -> c
+                                   False -> let lesser = -- agarrar el mas chico, sacar todos los que lo tengan como un subconjunto propio
 
 -}
+
+
+-- apcc' :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char) 
+
+-- isGenerator :: Set Char -> Set (Set Char, Set Char) -> Set Char -> Bool 
+-- isGenerator a f r = (ccda a f == r)  
+
+
 
 
 
