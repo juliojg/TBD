@@ -17,11 +17,13 @@ ccdf' r f'  = if (rec == f') then f' else ccdf' r rec
 
 -- Cierre de un conjunto de atributos
 ccda :: Set Char -> Set (Set Char, Set Char) -> Set Char
-ccda a f = let f' = ccdf a f
-           in Data.Set.foldl union empty (Data.Set.map (\x -> ccda' x f') (powerSet a))
+ccda a f = let a0 = Data.Set.filter (\(x,y) -> isSubsetOf x a) f
+               a1 = Data.Set.foldl union empty (Data.Set.map (\(x,y) -> y) a0)
+               a2 = union a a1
+           in if a == a2 then a2 else ccda a2 f
 
-ccda' :: Set Char -> Set (Set Char, Set Char) -> Set Char
-ccda' x f = Data.Set.foldl union empty (Data.Set.map (\(y1,y2) -> if (y1 == x) then y2 else x) f)
+
+
 -- En caso de que la condicion sea falsa, no deberia devolver nada. Pero es necesario devolver algo. Pongo x porque seguro va a estar en el resultado. Ademas, con la union se eliminan las repeticiones.
 -- estamos comparando mal
 
@@ -32,23 +34,15 @@ ccda' x f = Data.Set.foldl union empty (Data.Set.map (\(y1,y2) -> if (y1 == x) t
 apcc :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char)
 apcc r f = let p = (Data.Set.delete empty (powerSet r))
                candidates = Data.Set.filter (\x -> ccda x f == r) p -- dejo solo los que generan a r
-           in elimRedundancy candidates candidates  -- y saco los que están de mas
-{-
+           in elimRedundancy candidates candidates   -- y saco los que están de mas
+
+
 elimRedundancy :: Set (Set Char) -> Set (Set Char) -> Set (Set Char)
-elimRedundancy s c = case Data.Set.empty s of
-                                   True  -> c
-                                   False -> let lesser = -- agarrar el mas chico, sacar todos los que lo tengan como un subconjunto propio
-
--}
-
-
--- apcc' :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char) 
-
--- isGenerator :: Set Char -> Set (Set Char, Set Char) -> Set Char -> Bool 
--- isGenerator a f r = (ccda a f == r)  
-
-
-
+elimRedundancy set res = case set == empty of
+                           True -> res
+                           False -> let min = findMin set
+                                        res' = Data.Set.filter (\e -> not (isProperSubsetOf min e)) res
+                                    in elimRedundancy (Data.Set.delete min set) res'
 
 
 -- Regla de reflexividad, obtengo la reflexion de todos los sets, y luego las uno
