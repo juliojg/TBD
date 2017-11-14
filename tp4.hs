@@ -1,3 +1,6 @@
+-- TP 4 - Julio Joaquín Güella - Tobías Lucero
+
+
 import Data.Set
 
 --Cierre de conjuntos de dependencias funcionales
