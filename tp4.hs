@@ -1,11 +1,9 @@
 import Data.Set
-import System.Environment
 
-
--- Cierre de conjuntos de dependencias funcionales
+--Cierre de conjuntos de dependencias funcionales
 ccdf :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
 ccdf r f = let pr   = powerSet r
-               f'   = union f (reflex pr) --ME FALTABA UNIR ESTA F, AHORA ANDAAA
+               f'   = union f (reflex pr) 
            in    ccdf' r f'
                
 ccdf' :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
@@ -14,27 +12,18 @@ ccdf' r f'  = if (rec == f') then f' else ccdf' r rec
                                     f''' = transRec f'' f''
                                in f''') 
 
-
--- Cierre de un conjunto de atributos
+--Cierre de un conjunto de atributos
 ccda :: Set Char -> Set (Set Char, Set Char) -> Set Char
 ccda a f = let a0 = Data.Set.filter (\(x,y) -> isSubsetOf x a) f
                a1 = Data.Set.foldl union empty (Data.Set.map (\(x,y) -> y) a0)
                a2 = union a a1
            in if a == a2 then a2 else ccda a2 f
 
-
-
--- En caso de que la condicion sea falsa, no deberia devolver nada. Pero es necesario devolver algo. Pongo x porque seguro va a estar en el resultado. Ademas, con la union se eliminan las repeticiones.
--- estamos comparando mal
-
-
--- Algoritmo para claves candidatas
-
-
+--Algoritmo para claves candidatas
 apcc :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char)
 apcc r f = let p = (Data.Set.delete empty (powerSet r))
-               candidates = Data.Set.filter (\x -> ccda x f == r) p -- dejo solo los que generan a r
-           in elimRedundancy candidates candidates   -- y saco los que están de mas
+               superKeys = Data.Set.filter (\x -> ccda x f == r) p -- dejo solo los que generan a r
+           in elimRedundancy superKeys superKeys -- y saco los que están de mas
 
 
 elimRedundancy :: Set (Set Char) -> Set (Set Char) -> Set (Set Char)
@@ -44,15 +33,14 @@ elimRedundancy set res = case set == empty of
                                         res' = Data.Set.filter (\e -> not (isProperSubsetOf min e)) res
                                     in elimRedundancy (Data.Set.delete min set) res'
 
-
--- Regla de reflexividad, obtengo la reflexion de todos los sets, y luego las uno
+--Regla de reflexividad, obtengo la reflexion de todos los sets, y luego las uno
 reflex :: Set (Set Char) -> Set (Set Char, Set Char)
 reflex s = Data.Set.foldl union empty (Data.Set.map (\x -> reflexSet x) s) 
 
 reflexSet :: Set Char -> Set (Set Char, Set Char)
 reflexSet s =  (Data.Set.map (\x -> (s,x)) ( delete empty (powerSet s)))
 
--- Regla de aumentatividad (agrega los elementos originales de la relacion, no deberia importar porque creo que se va a unir)
+--Regla de aumentatividad (agrega los elementos originales de la relacion, no deberia importar porque creo que se va a unir)
 aument :: Set Char -> Set (Set Char, Set Char) ->  Set (Set Char, Set Char)
 aument r f = Data.Set.foldl union empty (Data.Set.map (\x -> aumentSet r x) f) 
 
@@ -60,12 +48,10 @@ aumentSet :: Set Char -> (Set Char, Set Char) -> Set (Set Char, Set Char)
 aumentSet r s = let p = powerSet r 
                 in  (Data.Set.map (\x -> aumentSet' x s) p)  
 
---basta con que sean disjuntos???
 aumentSet' :: Set Char -> (Set Char, Set Char) -> (Set Char, Set Char) 
-aumentSet' s (x, y) = (union s x, union s y) -- else (x, y) -- not (isSubsetOf s x || isSubsetOf s x || isSubsetOf x s || isSubsetOf x s)
--- if (Data.Set.size (intersection s x) == 0 && Data.Set.size (intersection s y) == 0) then 
+aumentSet' s (x, y) = (union s x, union s y)
 
--- Regla de transitividad total (aplica hasta que no existen mas transitividades posibles)
+--Regla de transitividad total (aplica hasta que no existen mas transitividades posibles)
 transRec :: Set (Set Char, Set Char) -> Set (Set Char, Set Char) -> Set (Set Char, Set Char) 
 transRec ss1 ss2 = let rec = trans ss1 ss2  
                     in if (rec == ss1) then ss1 else transRec rec ss2 
@@ -88,14 +74,6 @@ powerSet :: Set Char -> Set (Set Char)
 powerSet s = case Data.Set.null s of True  -> Data.Set.singleton empty
                                      False ->  union xss (Data.Set.map (Data.Set.insert (Data.Set.elemAt 0 s)) xss)
                                                    where xss = powerSet (Data.Set.deleteAt 0 s)
-
--- Implementacion original para listas
--- powerset :: [a] -> [[a]]
--- powerset [] = [[]]
--- powerset (x:xs) = xss ++ map (x:) xss
---                 where xss = powerset xs
-
-
 
 --Sets de prueba
 
@@ -128,6 +106,3 @@ r5 = fromList ['A' .. 'G']
 
 f5 :: Set (Set Char, Set Char)
 f5 = fromList [(fromList ['A'], fromList ['F']), (fromList ['A'], fromList ['G']), (fromList ['B'], fromList ['E']), (fromList ['C'], fromList ['D']), (fromList ['D'], fromList ['B']), (fromList ['E'], fromList ['A']), (fromList ['F','G'], fromList ['C'])]
-
-
-

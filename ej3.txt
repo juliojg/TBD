@@ -1,0 +1,9 @@
+Explicación del algoritmo implementado en el ejercicio 4.
+
+El algoritmo comienza calculando el conjunto de partes de el conjunto de atributos que le es pasado, y luego elimina al conjunto vacío de este.
+Ahora, de dicho conjunto de partes nos quedamos con aquellos elementos que generan al conjunto de atributos original (que son superclave), esto lo hacemos utilizando el algoritmo implementado en el ejercicio 2 y la funcion filter.
+Esto nos deja con todas las superclaves de dicho conjunto.
+
+Ahora utilizamos una función elimRedundancy que explicaremos a continuación.
+elimRedundancy toma como argumento dos conjuntos, usados para ir guardando el resultado que queremos y para hacer recursión de esta función. Tomamos un conjunto y quitamos del resultado todos que contengan propiamente a este. Luego hacemos una llamado recursivo sobre el primer conjunto (de conjuntos) sin el elemento tomado antes, y el nuevo resultado.
+Finalmente, a elimRedundancy le pasamos como argumento el conjunto de superclaves (dos veces), obteniendo asi el conjunto de claves candidatas, ya que por como funciona eliminará las que no sean minimales.
