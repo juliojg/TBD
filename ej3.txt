@@ -1,22 +1,34 @@
 
-TP4 - Julio Joaquín Güella - Tobías Francisco Lucero 
+TP 4 - Julio Joaquín Güella - Tobías Francisco Lucero 
 
----------------------------------
+----------------------------------------------------------------------
 
-Explicación del algoritmo implementado en el ejercicio 4.
+Ejercicio 3.
 
-El algoritmo comienza calculando el conjunto de partes de el conjunto de atributos que le es pasado, eliminando al conjunto vacío de este.
-Ahora, de dicho conjunto de partes nos quedamos con aquellos elementos que generan al conjunto de atributos original (que son superclave), esto lo hacemos utilizando el algoritmo implementado en el ejercicio 2 y la funcion filter.
+El algoritmo comienza calculando el conjunto de partes del conjunto 
+de atributos que le es pasado, eliminando al conjunto vacío de este.
+
+Ahora, de dicho conjunto de partes nos quedamos con aquellos elementos
+que generan al conjunto de atributos original (que son superclave),
+esto lo hacemos utilizando el algoritmo implementado en el ejercicio 2 
+y la funcion filter.
 Esto nos deja con todas las superclaves de dicho conjunto.
 
-Ahora utilizamos una función elimRedundancy que toma como argumento dos conjuntos, usados para ir guardando el resultado que queremos y para hacer recursión. Tomamos un conjunto y quitamos del otro (que será resultado) todos que contengan propiamente a este. Luego hacemos un llamado recursivo sobre el primer conjunto (de conjuntos) sin el elemento tomado antes, y el nuevo resultado.
-Finalmente, a elimRedundancy le pasamos como argumento el conjunto de superclaves (dos veces), obteniendo asi el conjunto de claves candidatas, ya que por como funciona eliminará las que no sean minimales.
+Ahora definimos y utilizamos una función elimRedundancy que toma como argumento 
+dos conjuntos de conjuntos (usados para el caso recursivo y para ir guardando 
+el resultado que queremos, respectivamente). Tomamos arbitrariamente un elemento
+del primero y eliminamos (filtrando) del otro aquellos elementos que cumplan la 
+propiedad de que contengan propiamente a este. Luego hacemos un llamado recursivo 
+sobre el primer conjunto sin el elemento antes seleccionado, y el conjunto 
+obtenido tras la eliminación (filtro).
+
+A dicha función le pasamos en sus dos argumentos el conjunto de 
+superclaves, obteniendo asi el conjunto de claves candidatas,
+ya que por como funciona eliminará las que no sean minimales.
+
+
+-----------------------------------------------------------------------
 
 
 
-----------------------------------
 
-
-Para compilar basta con, dentro de la carpeta donde se encuentra el archivo, ejecutar el comando:
->> ghci tp4.hs 
-Los casos de pruebas están incluídos en el archivo como fi y ri (con i de 1 a 5), pudiendo utilizar las funciones sobre estos.

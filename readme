@@ -1,0 +1,27 @@
+TP 4 - Julio Joaquín Güella - Tobías Francisco Lucero
+
+--------------------------------------------------------
+
+Para compilar basta con, dentro de la carpeta donde se encuentra el archivo, ejecutar el comando:
+
+>> ghci tp4.hs 
+
+--------------------------------------------------------
+
+Los casos de pruebas están incluídos en el archivo como fi, ri y alfaj (con i de 1 a 5, j de 3 a 5),
+pudiendo utilizar las funciones (ccdf, ccda y apcc) sobre estos.
+
+Por ejemplo, las salidas para los sets propuestos pueden obtenerse con: 
+
+size (ccdf r1 f1)
+
+size (ccdf r2 f2)
+
+ccda alfa3 f3
+apcc r3 f3
+
+ccda alfa4 f4
+apcc r4 f4
+
+ccda alfa5 f5
+apcc r5 f5

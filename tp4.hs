@@ -1,6 +1,5 @@
 -- TP 4 - Julio Joaquín Güella - Tobías Lucero
 
-
 import Data.Set
 
 --Cierre de conjuntos de dependencias funcionales
@@ -22,7 +21,7 @@ ccda a f = let a0 = Data.Set.filter (\(x,y) -> isSubsetOf x a) f
                a2 = union a a1
            in if a == a2 then a2 else ccda a2 f
 
---Algoritmo para claves candidatas
+--Algoritmo para claves candidatas, explicación en ej3.txt
 apcc :: Set Char -> Set (Set Char, Set Char) -> Set (Set Char)
 apcc r f = let p = (Data.Set.delete empty (powerSet r))
                superKeys = Data.Set.filter (\x -> ccda x f == r) p -- dejo solo los que generan a r
@@ -63,13 +62,16 @@ transRec ss1 ss2 = let rec = trans ss1 ss2
 trans :: Set (Set Char, Set Char) -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
 trans ss1 ss2 = Data.Set.foldl union empty (Data.Set.map (\x -> trans' x ss2) ss1)
 
---Devuelve, si es que la hay, la relacion de transitividad entre dos dependencias 
-transSet :: (Set Char, Set Char) -> (Set Char, Set Char) -> (Set Char, Set Char)
-transSet (x1, y1) (x2, y2) = if y1 == x2 then (x1, y2) else (x2, y2)
 
 --Devuelve todas las relaciones de transitividad entre una relacion y un conjunto de ellas
 trans' :: (Set Char, Set Char) -> Set (Set Char, Set Char) -> Set (Set Char, Set Char)
 trans' s ss = insert s (union (Data.Set.map (\x -> transSet s x) ss) ss)
+
+--Devuelve, si es que la hay, la relacion de transitividad entre dos dependencias 
+transSet :: (Set Char, Set Char) -> (Set Char, Set Char) -> (Set Char, Set Char)
+transSet (x1, y1) (x2, y2) = if y1 == x2 then (x1, y2) else (x2, y2)
+
+
 
 
 -- Dado un conjunto, obtiene el conjunto de partes de dicho conjunto
@@ -98,14 +100,27 @@ r3 = fromList ['A' .. 'J']
 f3 :: Set (Set Char, Set Char)
 f3 = fromList [(fromList ['A'], fromList ['I']), (fromList ['A','B'], fromList ['C']), (fromList ['A','D'], fromList ['G', 'H']), (fromList ['B','D'], fromList ['E', 'F']), (fromList ['H'], fromList ['J'])]
 
+alfa3 :: Set Char
+alfa3 = fromList ['B', 'D'] 
+
 r4 :: Set Char
 r4 = fromList ['A' .. 'H']
 
 f4 :: Set (Set Char, Set Char)
 f4 = fromList [(fromList ['A'], fromList ['B', 'C']), (fromList ['C'], fromList ['D']), (fromList ['D'], fromList ['G']), (fromList ['E'], fromList ['A']), (fromList ['E'], fromList ['H']), (fromList ['H'], fromList ['E'])]
 
+alfa4 :: Set Char
+alfa4 = fromList ['A', 'C'] 
+
+
 r5 :: Set Char
 r5 = fromList ['A' .. 'G']
 
 f5 :: Set (Set Char, Set Char)
 f5 = fromList [(fromList ['A'], fromList ['F']), (fromList ['A'], fromList ['G']), (fromList ['B'], fromList ['E']), (fromList ['C'], fromList ['D']), (fromList ['D'], fromList ['B']), (fromList ['E'], fromList ['A']), (fromList ['F','G'], fromList ['C'])]
+
+alfa5 :: Set Char
+alfa5 = fromList ['F', 'G'] 
+
+
+
